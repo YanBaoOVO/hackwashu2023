@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import Login from "./user/login";
+import Login from "./login.js";
 
 function App() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
