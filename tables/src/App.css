@@ -1,6 +1,6 @@
 .App-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background-color: #333;
   color: white;
@@ -13,12 +13,33 @@
   text-align: center;
 }
 
-.Login button {
+.login-button {
   background-color: #0074d9;
   color: white;
   border: none;
   padding: 5px;
   cursor: pointer;
+}
+
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ensure modal is on top */
+}
+
+.login-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px; /* or your desired width */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .search {
