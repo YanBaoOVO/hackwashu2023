@@ -6,43 +6,20 @@ function App() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
     return (
         <div className="App">
-            <header className="App-header">
-
-                <div className="left">
-                    <div className = "login-container">
-                        <button onClick={() => setLoginModalOpen(true)}>Login</button>
-                    </div>
-                </div>
-
-                <div className = "title">
-                    <h1>Tables</h1>
-                </div>
-
-                <div className="right">{/*search*/}
-                    <input type="text" placeholder="Search" />
-                    <button>Search</button>
-                </div>
-
-                <div className="right"></div>
-            </header>
+            <div className="account-box">
+                <button onClick={() => setLoginModalOpen(true)}>Login</button>
+                <div className='search-box'><input type="text" placeholder="Search"></input><button onClick={() => setLoginModalOpen(true)}>Search</button></div>
+            </div>
+            <h1 className='header-bar'>Tables</h1>
 
             {isLoginModalOpen && (
                 <div className="login-modal">
                     <div className="login-box">
-                        <button onClick={() => setLoginModalOpen(false)}>Close</button>
+                        <button className="close-button" onClick={() => setLoginModalOpen(false)}>Close</button>
                         <Login />
                     </div>
                 </div>
             )}
-
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/services">Services</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </nav>
 
             <main>
                 <h2>Our Mission</h2>

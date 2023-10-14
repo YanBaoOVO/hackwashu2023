@@ -1,24 +1,71 @@
-.App-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  color: white;
-}
-
-.title {
-  font-size: 24px; /* Adjust the font size as needed */
+body {
   margin: 0;
-  flex-grow: 1; /* Allow the title to take up available space */
-  text-align: center;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f6f6f6;
 }
 
-.login-button {
-  background-color: #0074d9;
+.account-box {
+  background-color: #c8d8e8;
+  padding: 5px 10px;
+  overflow: hidden;
+}
+
+.account-box form {
+  display: inline;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.search-box {
+  float: right;
+  display: inline;
+}
+
+.search-box input[type="text"] {
+  width: 140px;
+  margin-right: 5px;
+}
+
+.story-item {
+  border: 2px solid #dddddd;
+  padding: 1%;
+  box-shadow: 0px 10px 5px -5px #848484;
+  margin-bottom: 20px;
+}
+
+.header-bar {
+  margin: 0px;
   color: white;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
+  background: linear-gradient(0deg, #3560aa, #4d77c1);
+  padding: 10px;
+  box-shadow: 0px 3px 10px #848484;
+}
+
+main {
+  padding: 5% 5% 0;
+  margin-bottom: 3%;
+}
+
+footer{
+  background-color: #c8d8e8;
+  padding: 5px 10px;
+  overflow: hidden;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;   /* Adjust this value if needed for vertical positioning */
+  right: 10px; /* This will push the button to the right edge with a 10px space */
+}
+
+.login-box {
+  position: relative;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px; /* or your desired width */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .login-modal {
@@ -31,52 +78,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* ensure modal is on top */
+  z-index: 1; /* ensure modal is on top */
 }
 
-.login-box {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  width: 300px; /* or your desired width */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.search {
-  display: flex;
-  align-items: center;
-}
-
-input[type="text"] {
-  margin-right: 10px;
-  padding: 5px;
-}
-
-button {
+.login-button {
+  float: left;
   background-color: #0074d9;
   color: white;
   border: none;
   padding: 5px;
   cursor: pointer;
-}
-
-nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-nav li {
-  display: inline;
-  margin-right: 10px;
-}
-
-main {
-  padding: 20px;
-}
-
-footer {
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 10px 0;
+  margin-left: 10px;
 }
