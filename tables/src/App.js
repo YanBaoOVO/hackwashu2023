@@ -7,34 +7,33 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <div className="left-space"></div>
 
-                <div className="login">
-                    <div className = "login-button">
+                <div className="left">
+                    <div className = "login-container">
                         <button onClick={() => setLoginModalOpen(true)}>Login</button>
-                        {isLoginModalOpen && (
-                            <div className="login-modal">
-                                <div className="login-box">
-                                    <button onClick={() => setLoginModalOpen(false)}>Close</button>
-                                    <Login />
-                                </div>
-                            </div>
-                        )}
                     </div>
-
                 </div>
 
                 <div className = "title">
                     <h1>Tables</h1>
                 </div>
 
-                <div className="search">
+                <div className="right">{/*search*/}
                     <input type="text" placeholder="Search" />
                     <button>Search</button>
                 </div>
 
-                <div className="right-space"></div>
+                <div className="right"></div>
             </header>
+
+            {isLoginModalOpen && (
+                <div className="login-modal">
+                    <div className="login-box">
+                        <button onClick={() => setLoginModalOpen(false)}>Close</button>
+                        <Login />
+                    </div>
+                </div>
+            )}
 
             <nav>
                 <ul>
