@@ -1,46 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore'; // Import setDoc and doc
-import { db } from './firebase';
+import React, { useState } from 'react';
+import './App.css';
+import Login from "./user/login";
 
 function App() {
-    const [users, setUsers] = useState([]);
-
-    const addUser = async () => {
-        try {
-            // Use setDoc to add data to the "cities" collection
-            await setDoc(doc(db, "users"), {
-                username: "User 1",
-                password: "password",
-            });
-            console.log("Document successfully written!");
-        } catch (error) {
-            console.error("Error adding document: ", error);
-        }
-    };
-
-    const fetchUsers = async () => {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const newData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setUsers(newData);
-    }
-
-    useEffect(() => {
-        fetchUsers();
-        addUser(); // Call the function to add a city when the component mounts
-    }, []);
-
+    const [isLoginModalOpen, setLoginModalOpen] = useState(false);
     return (
-        <div>
-            <h1>User List</h1>
-            <ul>
-                {users.map((user) => (
-                    <li key={user.id}>
-                        <strong>ID:</strong> {user.id}<br />
-                        <strong>Username:</strong> {user.username}<br />
-                        <strong>Password:</strong> {user.password}
-                    </li>
-                ))}
-            </ul>
+        <div className="App">
+            <header className="App-header">
+
+                <div className="left">
+                    <div className = "login-container">
+                        <button onClick={() => setLoginModalOpen(true)}>Login</button>
+                    </div>
+                </div>
+
+                <div className = "title">
+                    <h1>Tables</h1>
+                </div>
+
+                <div className="right">{/*search*/}
+                    <input type="text" placeholder="Search" />
+                    <button>Search</button>
+                </div>
+
+                <div className="right"></div>
+            </header>
+
+            {isLoginModalOpen && (
+                <div className="login-modal">
+                    <div className="login-box">
+                        <button onClick={() => setLoginModalOpen(false)}>Close</button>
+                        <Login />
+                    </div>
+                </div>
+            )}
+
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/services">Services</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+
+            <main>
+                <h2>Our Mission</h2>
+                <p>Our mission is to create a platform for students to help each other.</p>
+
+                {/* Add other website content here */}
+            </main>
+
+            <footer>
+                <p>&copy; 2023 Tables</p>
+            </footer>
         </div>
     );
 }
