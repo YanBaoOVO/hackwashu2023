@@ -10,16 +10,37 @@ function App() {
     const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [isTaskModalOpen, setTaskModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState(''); // State to hold the current search term.
+    const [displayedTasks, setDisplayedTasks] = useState([]); // State to hold the tasks that are displayed on the UI.
 
     useEffect(() => {
         // Fetch tasks when the component mounts
         const fetchData = async () => {
             const allTasks = await fetchAllTasks();
             setTasks(allTasks);
+            setDisplayedTasks(allTasks);
         };
-
         fetchData();
     }, []);
+
+    // This function runs the search filtering.
+    const handleSearch = () => {
+        if (!searchTerm) {
+            // If the search term is empty, reset the displayed tasks to all tasks.
+            setDisplayedTasks(tasks);
+        } else {
+            // Filter the tasks based on the search term.
+            const filteredTasks = tasks.filter(task =>
+                task.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setDisplayedTasks(filteredTasks);
+        }
+    };
+
+    // This function updates the search term state as the user types in the search box.
+    const handleSearchInput = (event) => {
+        setSearchTerm(event.target.value);
+    };
 
     // Function to handle task card click
     const handleTaskCardClick = (task) => {
@@ -39,9 +60,15 @@ function App() {
             <div className="account-box">
                 <button onClick={() => setLoginModalOpen(true)}>Login</button>
                 <button onClick={() => setRegisterModalOpen(true)}>Register</button>
+                {/*<Search onSearch={handleSearch} />*/}
                 <div className='search-box'>
-                    <input type="text" placeholder="Search"></input>
-                    <button onClick={() => setLoginModalOpen(true)}>Search</button>
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={handleSearchInput} // Update search term as the user types.
+                    />
+                    <button onClick={handleSearch}>Search</button>
                 </div>
             </div>
             <h1 className='header-bar'>Tables</h1>
@@ -72,8 +99,9 @@ function App() {
                 </div>
                 <h1>What will you bring to the table?</h1>
                 <div className="task-card-container">
-                    {tasks.length > 0 ? (
-                        tasks.map((task) => (
+                    {/* Render the displayedTasks instead of the original tasks */}
+                    {displayedTasks.length > 0 ? (
+                        displayedTasks.map((task) => (
                             <div
                                 className="task-card"
                                 key={task.id}
