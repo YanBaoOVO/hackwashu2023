@@ -61,8 +61,10 @@ footer{
 
 .close-button {
   position: absolute;
-  top: 10px;   /* Adjust this value if needed for vertical positioning */
-  right: 10px; /* This will push the button to the right edge with a 10px space */
+  top: 10px;
+  /* Adjust this value if needed for vertical positioning */
+  right: 10px;
+  /* This will push the button to the right edge with a 10px space */
 }
 
 .login-box {
@@ -81,11 +83,13 @@ footer{
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* semi-transparent black */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1; /* ensure modal is on top */
+  z-index: 1;
+  /* ensure modal is on top */
 }
 
 .login-button {
@@ -96,4 +100,25 @@ footer{
   padding: 5px;
   cursor: pointer;
   margin-left: 10px;
+}
+
+.task-card-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.task-card {
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 10px;
+  background-color: #fff;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.task-card:hover {
+  transform: scale(1.05);
 }
