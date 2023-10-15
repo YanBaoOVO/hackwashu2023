@@ -6,16 +6,31 @@ import { fetchAllTasks } from './dbutils.js';
 function App() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [isTaskModalOpen, setTaskModalOpen] = useState(false);
 
     useEffect(() => {
         // Fetch tasks when the component mounts
         const fetchData = async () => {
-            const allTasks = await fetchAllTasks(); // Use 'await' to fetch tasks
+            const allTasks = await fetchAllTasks();
             setTasks(allTasks);
         };
 
         fetchData();
     }, []);
+
+    // Function to handle task card click
+    const handleTaskCardClick = (task) => {
+        setSelectedTask(task);
+        setTaskModalOpen(true);
+        console.log(task + " is clicked");
+    };
+
+    // Function to close the task modal
+    const closeTaskModal = () => {
+        setTaskModalOpen(false);
+        setSelectedTask(null);
+    };
 
     return (
         <div className="App">
@@ -47,10 +62,16 @@ function App() {
                 <div className="task-card-container">
                     {tasks.length > 0 ? (
                         tasks.map((task) => (
-                            <div className="task-card" key={task.id}>
+                            <div
+                                className="task-card"
+                                key={task.id}
+                                onClick={() => handleTaskCardClick(task)} // Click event to open the task modal
+                            >
                                 <h2>{task.title}</h2>
                                 <p>{task.description}</p>
-                                {/* Add more fields from your task document as needed */}
+                                <p>Deadline {new Date(task.deadline.seconds * 1000).toLocaleString()}</p>
+                                <p>Reward {task.reward}</p>
+                                <p>By {task.requester}</p>
                             </div>
                         ))
                     ) : (
@@ -58,6 +79,21 @@ function App() {
                     )}
                 </div>
             </main>
+
+            {/* Task Modal */}
+            {isTaskModalOpen && selectedTask && (
+                <div className="task-modal">
+                    <div className="task-modal-container">
+                        <h2>{selectedTask.title}</h2>
+                        <p>{selectedTask.description}</p>
+                        <p>Deadline {new Date(selectedTask.deadline.seconds * 1000).toLocaleString()}</p>
+                        <p>Reward {selectedTask.reward}</p>
+                        <p>By {selectedTask.requester}</p>
+                        <button>Accept task</button>
+                        <button onClick={closeTaskModal}>Close</button>
+                    </div>
+                </div>
+            )}
 
             <footer>
                 <p>&copy; 2023 Tables</p>

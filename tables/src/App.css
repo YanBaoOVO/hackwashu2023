@@ -122,3 +122,31 @@ footer{
 .task-card:hover {
   transform: scale(1.05);
 }
+
+
+.task-modal{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  /* ensure modal is on top */
+}
+
+.task-modal-container{
+  width: 700px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 10px;
+  background-color: #fff;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
