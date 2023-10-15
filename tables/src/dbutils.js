@@ -45,9 +45,9 @@ async function addUser(username, password) {
     };
 
     try {
-        await setDoc(doc(usersCollection), userDocument);
+        const ref = await addDoc(doc(usersCollection), userDocument);
         console.log('User added to Firestore successfully.');
-        return true;
+        return [true, ref.id];
     } catch (error) {
         console.error('Error adding user to Firestore:', error);
         return false;
@@ -78,6 +78,8 @@ async function fetchAllTasks() {
         const querySnapshot = await getDocs(tasksCollection);
         const tasks = [];
 
+        // debug
+
         querySnapshot.forEach((doc) => {
             // Retrieve each task document's data and add it to the tasks array
             tasks.push({
@@ -85,6 +87,8 @@ async function fetchAllTasks() {
                 ...doc.data(),
             });
         });
+
+        console.log(tasks);
 
         return tasks;
     } catch (error) {
