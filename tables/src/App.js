@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Login from './login.js';
 import { fetchAllTasks } from './dbutils.js';
+import Register from "./register.js";
 
 function App() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+    const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
@@ -21,6 +23,7 @@ function App() {
         <div className="App">
             <div className="account-box">
                 <button onClick={() => setLoginModalOpen(true)}>Login</button>
+                <button onClick={() => setRegisterModalOpen(true)}>Register</button>
                 <div className='search-box'>
                     <input type="text" placeholder="Search"></input>
                     <button onClick={() => setLoginModalOpen(true)}>Search</button>
@@ -33,6 +36,15 @@ function App() {
                     <div className="login-box">
                         <button className="close-button" onClick={() => setLoginModalOpen(false)}>Close</button>
                         <Login />
+                    </div>
+                </div>
+            )}
+
+            {isRegisterModalOpen && (
+                <div className="register-modal">
+                    <div className="register-box">
+                        <button className="close-button" onClick={() => setRegisterModalOpen(false)}>Close</button>
+                        <Register />
                     </div>
                 </div>
             )}
