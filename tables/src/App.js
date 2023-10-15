@@ -66,6 +66,7 @@ function App() {
                         type="text"
                         placeholder="Search"
                         value={searchTerm}
+                        onKeyUp={handleSearch}
                         onChange={handleSearchInput} // Update search term as the user types.
                     />
                     <button onClick={handleSearch}>Search</button>

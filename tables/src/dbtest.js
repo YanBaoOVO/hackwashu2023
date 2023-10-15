@@ -24,7 +24,7 @@ async function testFirestoreFunctions() {
     const isUsernameExists = await checkUsernameExists(usernameToCheck);
     console.log(`Username ${usernameToCheck} Exists:`, isUsernameExists);
 
-    const newUserAdded = await addUser('NewUser', 'NewPassword');
+    const newUserAdded = await addUser('a', 'b');
     console.log('New User Added:', newUserAdded);
 
     // Test Task-related Functions
