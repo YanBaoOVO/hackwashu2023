@@ -67,7 +67,7 @@ footer{
   /* This will push the button to the right edge with a 10px space */
 }
 
-.login-box {
+.login-box,.register-box {
   position: relative;
   background-color: #fff;
   padding: 20px;
@@ -77,7 +77,7 @@ footer{
   align-content: center;
 }
 
-.login-modal {
+.login-modal,.register-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -92,7 +92,7 @@ footer{
   /* ensure modal is on top */
 }
 
-.login-button {
+.login-button,.register-button {
   float: left;
   background-color: #0074d9;
   color: white;

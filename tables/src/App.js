@@ -23,11 +23,11 @@ function App() {
         <div className="App">
             <div className="account-box">
                 <button onClick={() => setLoginModalOpen(true)}>Login</button>
+                <button onClick={() => setRegisterModalOpen(true)}>Register</button>
                 <div className='search-box'>
                     <input type="text" placeholder="Search"></input>
                     <button onClick={() => setLoginModalOpen(true)}>Search</button>
                 </div>
-                <button onClick={() => setRegisterModalOpen(true)}>Register</button>
             </div>
             <h1 className='header-bar'>Tables</h1>
 
