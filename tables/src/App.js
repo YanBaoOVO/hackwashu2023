@@ -1,9 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+// import './App.css';
 import Login from './login.js';
-import { fetchAllTasks, addTask } from './dbutils.js'; // Import addTask function
+import { fetchAllTasks, addTask, updateTaskStatus } from './dbutils.js';
 import Register from "./register.js";
 import Timestamp from 'firebase/firestore';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import AppBar from '@mui/material/AppBar'; // Import AppBar component
+import Toolbar from '@mui/material/Toolbar'; // Import Toolbar component
+import List from '@mui/material/List';
+import Container from '@mui/material/Container';
+import ListItem from '@mui/material/ListItem';
+import { ListItemButton } from '@mui/material';
+import { ListItemText } from '@mui/material';
+import { styled, alpha } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
+
+
 
 function App() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
@@ -11,11 +30,11 @@ function App() {
     const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [isTaskModalOpen, setTaskModalOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(''); // State to hold the current search term.
-    const [displayedTasks, setDisplayedTasks] = useState([]); // State to hold the tasks that are displayed on the UI.
+    const [searchTerm, setSearchTerm] = useState('');
+    const [displayedTasks, setDisplayedTasks] = useState([]);
+    const navItems = ['Login', 'Regsiter'];
 
     useEffect(() => {
-        // Fetch tasks when the component mounts
         const fetchData = async () => {
             const allTasks = await fetchAllTasks();
             setTasks(allTasks);
@@ -25,7 +44,7 @@ function App() {
     }, []);
 
     function isLoggedIn() {
-        return localStorage.getItem('username') != null;
+        return localStorage.getItem('username') !== null;
     }
 
     const handleSearch = () => {
@@ -53,6 +72,17 @@ function App() {
         setSelectedTask(null);
     };
 
+    const acceptTask = () => {
+        const res = updateTaskStatus(selectedTask.id, 1);
+
+        if (res) {
+            alert("You have accepted this task!");
+        }
+        else {
+            alert("Accept task failed");
+        }
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('username');
         alert("You are logged out");
@@ -62,20 +92,18 @@ function App() {
     const handleSubmitTask = async (e) => {
         e.preventDefault();
 
-        // Get input values
         const title = e.target.elements.title.value;
         const deadline = e.target.elements.deadline.value;
         const reward = e.target.elements.reward.value;
         const desc = e.target.elements.desc.value;
         const post_time = new Date();
 
-        // Add the task to the database
         const [success, taskId] = await addTask(
             deadline,
             desc,
             post_time,
             localStorage.getItem('username'),
-            null, // Set responder to null initially
+            null,
             reward,
             0,
             title
@@ -83,7 +111,7 @@ function App() {
 
         if (success) {
             console.log('Task added with ID: ', taskId);
-            e.target.reset(); // Reset the form
+            e.target.reset();
             window.location.reload();
         } else {
             console.error('Failed to add the task');
@@ -92,37 +120,53 @@ function App() {
 
     return (
         <div className="App">
-            <div className="account-box">
-                {isLoggedIn() ? (
-                    <>
-                        <div className='hello-text'>You are logged in as: {localStorage.getItem('username')}</div>
-                        <button onClick={handleLogout}>Log Out</button>
-                    </>
+            {/* App Bar */}
+            <AppBar position="static">
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <List>
+                            {isLoggedIn() ? (
+                                <div className='hello-text'>You are logged in as: {localStorage.getItem('username')}</div>
+                            ) : (
+                                <>
+                                    <Button variant="contained" onClick={() => setLoginModalOpen(true)}>Login</Button>
+                                    <Button variant="contained" onClick={() => setRegisterModalOpen(true)}>Register</Button>
+                                </>
+                            )}
+                        </List>
 
-                ) : (
-                    <>
-                        <button onClick={() => setLoginModalOpen(true)}>Login</button>
-                        <button onClick={() => setRegisterModalOpen(true)}>Register</button>
-                    </>
-                )}
+                        {/* { (
+                            <>
+                                <Button variant="contained" onClick={() => setLoginModalOpen(true)}>Login</Button>
+                                <Button variant="contained" onClick={() => setRegisterModalOpen(true)}>Register</Button>
+                            </>
+                        )} */}
 
-                <div className='search-box'>
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        value={searchTerm}
-                        onKeyUp={handleSearch}
-                        onChange={handleSearchInput}
-                    />
-                    <button onClick={handleSearch}>Search</button>
-                </div>
-            </div>
-            <h1 className='header-bar'>Tables</h1>
+
+                        <div style={{ float: 'right', color: 'white' }}>
+                            <form>
+                                <TextField
+                                    id="search-bar"
+                                    className="text"
+                                    onKeyUp={handleSearch}
+                                    onChange={handleSearchInput}
+                                    value={searchTerm}
+                                    variant="outlined"
+                                    placeholder="Search..."
+                                    size="small"
+                                />
+                                <Button type="submit" onClick={handleSearch}>Go</Button>
+                            </form>
+                        </div>
+
+                    </Toolbar>
+                </Container>
+            </AppBar>
 
             {isLoginModalOpen && (
                 <div className="login-modal">
                     <div className="login-box">
-                        <button className="close-button" onClick={() => setLoginModalOpen(false)}>Close</button>
+                        <Button className="close-button" onClick={() => setLoginModalOpen(false)}>Close</Button>
                         <Login />
                     </div>
                 </div>
@@ -131,64 +175,88 @@ function App() {
             {isRegisterModalOpen && (
                 <div className="register-modal">
                     <div className="register-box">
-                        <button className="close-button" onClick={() => setRegisterModalOpen(false)}>Close</button>
+                        <Button className="close-button" onClick={() => setRegisterModalOpen(false)}>Close</Button>
                         <Register />
                     </div>
                 </div>
             )}
 
             <main>
-                <h1>What would you like the community to do for you?</h1>
-                <form onSubmit={handleSubmitTask}>
-                    <div className='task-card-container'>
-                        I want to
-                        <input type='text' placeholder='buy me a cup of coffee' name="title" required />
-                        by
-                        <input type='datetime-local' name="deadline" required />
-                        , the reward is
-                        <input type='text' placeholder='a cup of coffee...' name="reward" required />
-                        .
-                        Here are some notes to help accomplish this task:
-                        <input type='text' placeholder='whole milk please...' name="desc" />
-                        . Thanks!
-                        <button type="submit">Submit</button>
-                    </div>
-                </form>
+                <Box p={2}>
+                    <h1 className='header-bar'>Tables</h1>
+                    <h2>What would you like the community to do for you?</h2>
+                    <form onSubmit={handleSubmitTask}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6">Create a Task</Typography>
+                                <TextField
+                                    name="title"
+                                    label="Title"
+                                    variant="outlined"
+                                    required
+                                    style={{ marginRight: '8px' }}
+                                />
+                                <TextField
+                                    name="deadline"
+                                    type="datetime-local"
+                                    variant="outlined"
+                                    required
+                                    style={{ marginRight: '8px' }}
+                                />
+                                <TextField
+                                    name="reward"
+                                    label="Reward"
+                                    variant="outlined"
+                                    required
+                                    style={{ marginRight: '8px' }}
+                                />
+                                <TextField
+                                    name="desc"
+                                    label="Description"
+                                    variant="outlined"
+                                />
+                                <div style={{ display: 'block' }}>
+                                    <Button type="submit" variant="contained" color="primary">
+                                        Submit
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </form>
 
-                <h1>What will you bring to the table?</h1>
-                <div className="task-card-container">
+                    <h2>What will you bring to the table?</h2>
                     {displayedTasks.length > 0 ? (
                         displayedTasks.map((task) => (
-                            <div
-                                className="task-card"
-                                key={task.id}
-                                onClick={() => handleTaskCardClick(task)}
-                            >
-                                <h2>{task.title}</h2>
-                                <p>{task.description}</p>
-                                <p>Deadline {new Date(task.deadline.seconds * 1000).toLocaleString()}</p>
-                                <p>Reward {task.reward}</p>
-                                <p>By {task.requester}</p>
-                            </div>
+                            <Card key={task.id} onClick={() => handleTaskCardClick(task)}>
+                                <CardContent>
+                                    <Typography variant="h6">{task.title}</Typography>
+                                    <Typography>{task.description}</Typography>
+                                    <Typography>Deadline {new Date(task.deadline.seconds * 1000).toLocaleString()}</Typography>
+                                    <Typography>Reward {task.reward}</Typography>
+                                    <Typography>By {task.requester}</Typography>
+                                </CardContent>
+                            </Card>
                         ))
                     ) : (
-                        <p>No tasks available</p>
+                        <Typography variant="body1">No tasks available</Typography>
                     )}
-                </div>
+                </Box>
             </main>
 
             {isTaskModalOpen && selectedTask && (
-                <div className="task-modal">
-                    <div className="task-modal-container">
-                        <h2>{selectedTask.title}</h2>
-                        <p>{selectedTask.description}</p>
-                        <p>Deadline {new Date(selectedTask.deadline.seconds * 1000).toLocaleString()}</p>
-                        <p>Reward {selectedTask.reward}</p>
-                        <p>By {selectedTask.requester}</p>
-                        {isLoggedIn() && <button>Accept task</button>}
-                        <button onClick={closeTaskModal}>Close</button>
-                    </div>
-                </div>
+                <Modal open={isTaskModalOpen}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h5">{selectedTask.title}</Typography>
+                            <Typography>{selectedTask.description}</Typography>
+                            <Typography>Deadline {new Date(selectedTask.deadline.seconds * 1000).toLocaleString()}</Typography>
+                            <Typography>Reward {selectedTask.reward}</Typography>
+                            <Typography>By {selectedTask.requester}</Typography>
+                            {isLoggedIn() && <Button onClick={acceptTask} variant="contained" color="primary">Accept task</Button>}
+                            <Button onClick={closeTaskModal} variant="contained">Close</Button>
+                        </CardContent>
+                    </Card>
+                </Modal>
             )}
 
             <footer>
