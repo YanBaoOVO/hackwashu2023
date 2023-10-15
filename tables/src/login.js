@@ -1,70 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import {fetchUserByUsername, checkUsernameExists} from './dbutils.js';
-import bcrypt from 'bcryptjs'; // Import bcrypt for client-side hashing
+import React, { useState } from 'react';
+import { fetchUserByUsername, checkUsernameExists } from './dbutils.js';
+import bcrypt from 'bcryptjs';
 
 function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [hashedPassword, setHashedPassword] = useState(''); // State to store the hashed password
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-    // Hash the password when it changes
-    useEffect(() => {
-        if (password) {
-            // Generate a salt and hash the password
-            bcrypt.genSalt(10, (err, salt) => {
-                if (!err) {
-                    bcrypt.hash(password, salt, (err, hash) => {
-                        if (!err) {
-                            setHashedPassword(hash);
-                        }
-                    });
-                }
-            });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // If there is a user 
+    if (await checkUsernameExists(username) > 0) {
+      const user = await fetchUserByUsername(username);
+
+      try {
+        // Compare the provided password with the stored hash
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (isPasswordValid) {
+          alert('Login successful');
         } else {
-            // Clear the hashed password if the password field is empty
-            setHashedPassword('');
+          alert('Incorrect credentials');
         }
-    }, [password]);
+      } catch (error) {
+        console.error('Password comparison error', error);
+        alert('Login failed');
+      }
+    } else {
+      alert('Username does not exist');
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const ifUserNameExists = checkUsernameExists(username);
-        if (ifUserNameExists) {
-            const user = fetchUserByUsername(username);
-
-            // Compare the hashed password with the stored hash
-            bcrypt.compare(password, user.password, (err, result) => {
-                if (result) {
-                    alert('Login successful');
-                } else {
-                    alert('Incorrect credentials');
-                }
-            });
-        } else {
-            alert('Username does not exist');
-        }
-    };
-
-    return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text" // Use "text" for username, not "username"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                /><br></br>
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                /><br></br>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    );
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        /><br></br>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        /><br></br>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
 }
 
 export default Login;

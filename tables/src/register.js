@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
-import { addUser } from './dbutils.js'; // Assume you have a function to call API for user registration
+import { addUser, checkUsernameExists } from './dbutils.js'; // Assume you have a function to call API for user registration
 import bcrypt from 'bcryptjs';
 
 function Register() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [hashedPassword, setHashedPassword] = useState(''); // State to store the hashed password
-
-    // Hash the password when it changes
-    const hashPassword = async (passwordToHash) => {
-        try {
-            const salt = await bcrypt.genSalt(10);
-            const hash = await bcrypt.hash(passwordToHash, salt);
-            setHashedPassword(hash);
-        } catch (error) {
-            console.error("Could not hash password", error);
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,13 +16,17 @@ function Register() {
             return;
         }
 
-        // Optionally hash the password on the client-side before sending it to the server
-        await hashPassword(password);
+        // check for duplicate usernames
+        if(await checkUsernameExists(username) > 0){
+            alert("Duplicate username, please think of another username");
+            return;
+        }
 
-        // Send the username and hashed password to the server
-        // Here we're assuming the server expects properties 'username' and 'password'
+        // Hash the password on the client-side before sending it to the server
         try {
-            await addUser(username, hashedPassword );
+            const hashed = await bcrypt.hash(password, 10);
+            // Send the username and hashed password to the server
+            await addUser(username, hashed);
             alert('Registration successful');
         } catch (error) {
             alert('Failed to register');

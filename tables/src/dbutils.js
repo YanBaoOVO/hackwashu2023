@@ -31,7 +31,7 @@ async function checkUsernameExists(username) {
     const userQuery = query(usersCollection, where('username', '==', username));
     const querySnapshot = await getDocs(userQuery);
 
-    return !querySnapshot.empty; // Returns true if a user with the provided username exists, false otherwise
+    return querySnapshot.size; // Returns true if a user with the provided username exists, false otherwise
 }
 
 // create a user
@@ -45,9 +45,10 @@ async function addUser(username, password) {
     };
 
     try {
-        const ref = await addDoc(doc(usersCollection), userDocument);
+        const dcref = doc(usersCollection);
+        const ref = await setDoc(dcref, userDocument);
         console.log('User added to Firestore successfully.');
-        return [true, ref.id];
+        return [true, dcref.id];
     } catch (error) {
         console.error('Error adding user to Firestore:', error);
         return false;
