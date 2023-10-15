@@ -18,6 +18,8 @@ function Login() {
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (isPasswordValid) {
+          // set login in localstorage
+          localStorage.setItem('username', username);
           alert('Login successful');
         } else {
           alert('Incorrect credentials');

@@ -145,9 +145,10 @@ async function addTask(deadline, desc, post_time, requester, responder, reward, 
     try {
         // this returns an array, the first one is the return status, the second one is the id of the task just
         // being added 
-        const d = await addDoc(tasksCollection, taskDocument);
+        const ref = doc(tasksCollection);
+        const d = await setDoc(ref, taskDocument);
         console.log('Task added to Firestore successfully.');
-        return [true, d.id];
+        return [true, ref.id];
     } catch (error) {
         console.error('Error adding task to Firestore:', error);
         return false;

@@ -150,3 +150,8 @@ footer{
   transition: transform 0.2s;
   cursor: pointer;
 }
+
+.hello-text{
+  display: inline;
+  color: white;
+}

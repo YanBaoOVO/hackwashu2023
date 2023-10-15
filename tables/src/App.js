@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Login from './login.js';
-import { fetchAllTasks } from './dbutils.js';
+import { fetchAllTasks, addTask } from './dbutils.js'; // Import addTask function
 import Register from "./register.js";
+import Timestamp from 'firebase/firestore';
 
 function App() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
@@ -23,13 +24,14 @@ function App() {
         fetchData();
     }, []);
 
-    // This function runs the search filtering.
+    function isLoggedIn() {
+        return localStorage.getItem('username') != null;
+    }
+
     const handleSearch = () => {
         if (!searchTerm) {
-            // If the search term is empty, reset the displayed tasks to all tasks.
             setDisplayedTasks(tasks);
         } else {
-            // Filter the tasks based on the search term.
             const filteredTasks = tasks.filter(task =>
                 task.title.toLowerCase().includes(searchTerm.toLowerCase())
             );
@@ -37,37 +39,80 @@ function App() {
         }
     };
 
-    // This function updates the search term state as the user types in the search box.
     const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
     };
 
-    // Function to handle task card click
     const handleTaskCardClick = (task) => {
         setSelectedTask(task);
         setTaskModalOpen(true);
-        console.log(task + " is clicked");
     };
 
-    // Function to close the task modal
     const closeTaskModal = () => {
         setTaskModalOpen(false);
         setSelectedTask(null);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('username');
+        alert("You are logged out");
+        window.location.reload();
+    };
+
+    const handleSubmitTask = async (e) => {
+        e.preventDefault();
+
+        // Get input values
+        const title = e.target.elements.title.value;
+        const deadline = e.target.elements.deadline.value;
+        const reward = e.target.elements.reward.value;
+        const desc = e.target.elements.desc.value;
+        const post_time = new Date();
+
+        // Add the task to the database
+        const [success, taskId] = await addTask(
+            deadline,
+            desc,
+            post_time,
+            localStorage.getItem('username'),
+            null, // Set responder to null initially
+            reward,
+            0,
+            title
+        );
+
+        if (success) {
+            console.log('Task added with ID: ', taskId);
+            e.target.reset(); // Reset the form
+            window.location.reload();
+        } else {
+            console.error('Failed to add the task');
+        }
+    };
+
     return (
         <div className="App">
             <div className="account-box">
-                <button onClick={() => setLoginModalOpen(true)}>Login</button>
-                <button onClick={() => setRegisterModalOpen(true)}>Register</button>
-                {/*<Search onSearch={handleSearch} />*/}
+                {isLoggedIn() ? (
+                    <>
+                        <div className='hello-text'>You are logged in as: {localStorage.getItem('username')}</div>
+                        <button onClick={handleLogout}>Log Out</button>
+                    </>
+
+                ) : (
+                    <>
+                        <button onClick={() => setLoginModalOpen(true)}>Login</button>
+                        <button onClick={() => setRegisterModalOpen(true)}>Register</button>
+                    </>
+                )}
+
                 <div className='search-box'>
                     <input
                         type="text"
                         placeholder="Search"
                         value={searchTerm}
                         onKeyUp={handleSearch}
-                        onChange={handleSearchInput} // Update search term as the user types.
+                        onChange={handleSearchInput}
                     />
                     <button onClick={handleSearch}>Search</button>
                 </div>
@@ -94,19 +139,30 @@ function App() {
 
             <main>
                 <h1>What would you like the community to do for you?</h1>
-                <div className='task-card-container'>
-                I want to <input type='text' placeholder='buy me a cup of coffee'></input> by <input type='datetime-local'></input>, the reward is <input type='text' placeholder='a cup of coffee...'></input>.
-                Here are some notes to help accomplish this task: <input type='text' placeholder='whole milk please...'></input>. Thanks!
-                </div>
+                <form onSubmit={handleSubmitTask}>
+                    <div className='task-card-container'>
+                        I want to
+                        <input type='text' placeholder='buy me a cup of coffee' name="title" required />
+                        by
+                        <input type='datetime-local' name="deadline" required />
+                        , the reward is
+                        <input type='text' placeholder='a cup of coffee...' name="reward" required />
+                        .
+                        Here are some notes to help accomplish this task:
+                        <input type='text' placeholder='whole milk please...' name="desc" />
+                        . Thanks!
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+
                 <h1>What will you bring to the table?</h1>
                 <div className="task-card-container">
-                    {/* Render the displayedTasks instead of the original tasks */}
                     {displayedTasks.length > 0 ? (
                         displayedTasks.map((task) => (
                             <div
                                 className="task-card"
                                 key={task.id}
-                                onClick={() => handleTaskCardClick(task)} // Click event to open the task modal
+                                onClick={() => handleTaskCardClick(task)}
                             >
                                 <h2>{task.title}</h2>
                                 <p>{task.description}</p>
@@ -121,7 +177,6 @@ function App() {
                 </div>
             </main>
 
-            {/* Task Modal */}
             {isTaskModalOpen && selectedTask && (
                 <div className="task-modal">
                     <div className="task-modal-container">
@@ -130,7 +185,7 @@ function App() {
                         <p>Deadline {new Date(selectedTask.deadline.seconds * 1000).toLocaleString()}</p>
                         <p>Reward {selectedTask.reward}</p>
                         <p>By {selectedTask.requester}</p>
-                        <button>Accept task</button>
+                        {isLoggedIn() && <button>Accept task</button>}
                         <button onClick={closeTaskModal}>Close</button>
                     </div>
                 </div>
