@@ -6,7 +6,7 @@ body {
 }
 
 .account-box {
-  background-color: #c8d8e8;
+  background-color: #444c64;
   padding: 5px 10px;
   overflow: hidden;
 }
@@ -37,9 +37,12 @@ body {
 .header-bar {
   margin: 0px;
   color: white;
-  background: linear-gradient(0deg, #3560aa, #4d77c1);
+  text-align: center;
+  background: #B9BECD;
+  font-family: 'Times New Roman', serif;
+  font-size: 50px;
   padding: 10px;
-  box-shadow: 0px 3px 10px #848484;
+  box-shadow: 0px 3px 10px #444c64;
 }
 
 main {
@@ -48,9 +51,12 @@ main {
 }
 
 footer{
-  background-color: #c8d8e8;
+  background-color: #444c64;
+  color: white;
+  text-align: center;
   padding: 5px 10px;
   overflow: hidden;
+  align-content: center;
 }
 
 .close-button {
@@ -64,8 +70,9 @@ footer{
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
-  width: 300px; /* or your desired width */
+  width: 200px; /* or your desired width */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  align-content: center;
 }
 
 .login-modal {
